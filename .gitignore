@@ -111,3 +111,24 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Electrobun build output
+.electrobun/
+build/
+
+# App runtime data
+data/
+models/
+bin/
+
+# Bun
+bun.lock
+
+# CES manifest
+ces.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

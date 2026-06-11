@@ -1,0 +1,53 @@
+import { existsSync, watch } from "node:fs";
+import { join } from "node:path";
+import { BrowserWindow, Utils } from "electrobun/bun";
+import { APP_NAME } from "../shared/constants";
+import { mainViewRPC } from "./rpc/router";
+
+const MAIN_VIEW_URL = "views://main/index.html";
+const DEV_VIEW_DIRECTORY = join(process.cwd(), ".electrobun", "views", "main");
+const DEV_RELOAD_DELAY_MS = 120;
+const LOCAL_NAVIGATION_RULES = ["^*", "views://*", "about:blank"];
+
+const setupDevViewReloader = (window: BrowserWindow): void => {
+  if (process.env.CES_DEV_RELOAD !== "1" || !existsSync(DEV_VIEW_DIRECTORY)) {
+    return;
+  }
+
+  let reloadTimer: ReturnType<typeof setTimeout> | null = null;
+  const watcher = watch(DEV_VIEW_DIRECTORY, { persistent: false }, () => {
+    if (reloadTimer) clearTimeout(reloadTimer);
+    reloadTimer = setTimeout(() => {
+      reloadTimer = null;
+      window.webview.loadURL(MAIN_VIEW_URL);
+    }, DEV_RELOAD_DELAY_MS);
+  });
+
+  window.on("close", () => {
+    if (reloadTimer) clearTimeout(reloadTimer);
+    watcher.close();
+  });
+};
+
+export const createMainWindow = (): BrowserWindow => {
+  const window = new BrowserWindow({
+    frame: {
+      height: 720,
+      width: 960,
+      x: 120,
+      y: 120,
+    },
+    rpc: mainViewRPC,
+    title: APP_NAME,
+    url: MAIN_VIEW_URL,
+  });
+
+  window.webview.setNavigationRules(LOCAL_NAVIGATION_RULES);
+  setupDevViewReloader(window);
+
+  window.on("close", () => {
+    Utils.quit();
+  });
+
+  return window;
+};
