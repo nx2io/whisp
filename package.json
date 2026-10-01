@@ -1,6 +1,16 @@
 {
   "name": "whisp",
   "version": "0.1.0",
+  "description": "Offline audio and video transcriber for Linux. Drop a file in, get text out.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyrazolabs/Whisp.git"
+  },
+  "homepage": "https://github.com/kyrazolabs/Whisp#readme",
+  "bugs": {
+    "url": "https://github.com/kyrazolabs/Whisp/issues"
+  },
   "type": "module",
   "private": true,
   "packageManager": "bun@1.3.0",

@@ -121,9 +121,6 @@ data/
 models/
 bin/
 
-# Bun
-bun.lock
-
 # CES manifest
 ces.json
 
